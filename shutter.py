@@ -4,7 +4,17 @@ import platform
 import os
 
 
-def get_capture(camera_id):
+def main():
+    camera_id = 8
+    width = 1920
+    height = 1080
+    fps = 6
+    save_dir = "./data"
+    cap = get_capture(camera_id, width=width, height=height, fps=fps)
+    image_shutter(cap, save_dir=save_dir)
+
+
+def get_capture(camera_id, width=640, height=480, fps=15):
 
     if (platform.system() == "Linux"):
         cap = cv2.VideoCapture(camera_id)
@@ -13,14 +23,22 @@ def get_capture(camera_id):
     else:
         print("Use Linux or Windows.")
         return None
+
+    cap.set(cv2.CAP_PROP_FPS, fps)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     return cap
 
 
-def image_shutter(capture, save_dir="./", camera_name=""):
+def image_shutter(capture, save_dir=".", camera_name="", auto=True):
+    now = datetime.datetime.now()
+    now = str(now).replace(" ", "_")
+    save_dir = os.path.join(save_dir, now)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     cap = capture
     cnt = 1
+    save = False
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -28,13 +46,33 @@ def image_shutter(capture, save_dir="./", camera_name=""):
             return
         cv2.imshow("Camera " + camera_name, frame)
         key = cv2.waitKey(1)
-        if key == ord("s"):
-            now = datetime.datetime.now()
-            now = str(now).replace(" ", "_")
-            img_path = os.path.join(save_dir, now + ".png")
-
-            print("Saved " + str(cnt) + " img:" + img_path)
-            cv2.imwrite(img_path, frame)
-            cnt += 1
+        if key == 32 and save is False:
+            save = True
+        elif key == 32 and save is True:
+            save = False
         elif key == ord("q"):
             return
+
+        if auto and save:
+            save_bmp(frame, save_dir, cnt)
+            cnt += 1
+            if key == ord("q"):
+                return
+            continue
+
+        elif key == ord("s"):
+            save_bmp(frame, save_dir, cnt)
+            cnt += 1
+
+
+def save_bmp(frame, save_dir, cnt):
+    now = datetime.datetime.now()
+    now = str(now).replace(" ", "_")
+    img_path = os.path.join(save_dir, now + ".bmp")
+
+    print("Saved " + str(cnt) + " img:" + img_path)
+    cv2.imwrite(img_path, frame)
+
+
+if __name__ == "__main__":
+    main()
