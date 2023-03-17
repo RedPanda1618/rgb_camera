@@ -27,6 +27,7 @@ def get_capture(camera_id, width=640, height=480, fps=15):
     cap.set(cv2.CAP_PROP_FPS, fps)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1.0)
     return cap
 
 
