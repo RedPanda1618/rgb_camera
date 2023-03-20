@@ -4,16 +4,6 @@ import platform
 import os
 
 
-def main():
-    camera_id = 8
-    width = 1920
-    height = 1080
-    fps = 6
-    save_dir = "./data"
-    cap = get_capture(camera_id, width=width, height=height, fps=fps)
-    image_shutter(cap, save_dir=save_dir)
-
-
 def get_capture(camera_id, width=640, height=480, fps=15):
 
     if (platform.system() == "Linux"):
@@ -73,7 +63,3 @@ def save_bmp(frame, save_dir, cnt):
 
     print("Saved " + str(cnt) + " img:" + img_path)
     cv2.imwrite(img_path, frame)
-
-
-if __name__ == "__main__":
-    main()

@@ -2,8 +2,13 @@ import shutter
 
 
 def main():
-    cap = shutter.get_capture(4)
-    shutter.image_shutter(cap, save_dir="imgs", camera_name="test")
+    camera_id = 8
+    width = 1920
+    height = 1080
+    fps = 6
+    save_dir = "./data"
+    cap = shutter.get_capture(camera_id, width=width, height=height, fps=fps)
+    shutter.image_shutter(cap, save_dir=save_dir)
 
 
 if __name__ == "__main__":
