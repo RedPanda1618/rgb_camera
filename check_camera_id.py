@@ -9,10 +9,14 @@ def check_camera_connection_display(save_flag=False):
     true_camera_is = []
 
     for camera_number in range(0, 10):
-        if (platform.system() == "Linux"):
+        if platform.system() == "Linux":
             cap = cv2.VideoCapture(camera_number)
-        elif (platform.system() == "Windows"):
-            cap = cv2.VideoCapture(camera_number, cv2.CAP_DSHOW)
+        elif platform.system() == "Windows":
+            try:
+                cap = cv2.VideoCapture(camera_number, cv2.CAP_DSHOW)
+            except TypeError:
+                cap = cv2.VideoCapture(camera_number)
+
         else:
             print("Use Linux or Windows.")
             return
@@ -30,14 +34,14 @@ def check_camera_connection_display(save_flag=False):
                 if elasped_time > 1.0:
                     if save_flag:
                         # save data file
-                        save_data_name = f'N_{camera_number}.png'
+                        save_data_name = f"N_{camera_number}.png"
                         cv2.imwrite(save_data_name, gray)
 
                     break
 
-                cv2.imshow(f'Camera Number: {camera_number}', gray)
+                cv2.imshow(f"Camera Number: {camera_number}", gray)
 
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
 
             cap.release()
@@ -53,5 +57,5 @@ def check_camera_connection_display(save_flag=False):
     print("Camera ports: " + str(true_camera_is))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     check_camera_connection_display(save_flag=False)

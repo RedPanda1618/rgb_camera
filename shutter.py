@@ -5,10 +5,13 @@ import os
 
 
 def get_capture(camera_id, width=640, height=480, fps=6):
-    if (platform.system() == "Linux"):
+    if platform.system() == "Linux":
         cap = cv2.VideoCapture(camera_id)
-    elif (platform.system() == "Windows"):
-        cap = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
+    elif platform.system() == "Windows":
+        try:
+            cap = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
+        except TypeError:
+            cap = cv2.VideoCapture(camera_id)
     else:
         print("Use Linux or Windows.")
         return None
@@ -20,7 +23,9 @@ def get_capture(camera_id, width=640, height=480, fps=6):
     return cap
 
 
-def image_shutter(capture, save_dir_root=".", camera_name="", file_type="png", auto=True):
+def image_shutter(
+    capture, save_dir_root=".", camera_name="", file_type="png", auto=True
+):
     now = datetime.datetime.now()
     now = str(now).replace(" ", "").replace(":", "_").replace(".", "_")
     save_dir = os.path.join(save_dir_root, now)
